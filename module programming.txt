@@ -1,0 +1,27 @@
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/sched.h>
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Neelu And Gurupriya");
+MODULE_DESCRIPTION("To print the total number of current running processes");
+
+static int n=0; // to avoid mixed declaration 
+
+static int __init no_of_runningpro(void) {
+    struct task_struct *task;
+    printk(KERN_INFO "Module loaded");
+    
+    list_for_each_entry(task, &current->tasks, tasks) if (task->pid) n++; 
+    
+    printk(KERN_INFO "Total processes: %d\n", n);
+    return 0;
+}
+
+static void __exit finished(void) {
+    printk(KERN_INFO "Module unloaded.\n");
+}
+
+module_init(no_of_runningpro);
+module_exit(finished);
